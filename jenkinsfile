@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+    stages {
+        stage ('Git clone framework') {
+            steps {
+                dir ('framework') {
+                    git credentialsId: '8f0652e0-75bb-4569-b76f-185101bf3e5c', url: 'git@github.com:iansinclair/jfdi-framework.git'
+                }
+            }
+        }
+        
+        stage ('Git clone content') {
+            steps {
+                dir ('content') {
+                    git credentialsId: '8f0652e0-75bb-4569-b76f-185101bf3e5c', url: 'git@github.com:iansinclair/jfdi-web.git'
+                }
+            }
+        }
+        
+        stage ('Build') {
+            steps {
+                powershell label: '', script: '''$bottom = get-content "$($pwd.path)\\framework\\bottom.html"
+$replace = "<!--Jenkins-->"
+$badge = "<a href=\'http://localhost:8080/job/$($env:JOB_NAME)/\'><img src=\'http://localhost:8080/job/$($env:JOB_NAME)/badge/icon\'></a>"
+$buildInfo = "Deployed by Jenkins (Build $($env:BUILD_NUMBER)) on $(get-date) $badge"
+$bottom = $bottom -replace ($replace,$buildInfo)
+$bottom | out-file "$($pwd.path)\\framework\\bottom.html"
+'''
+            }
+        }
+        
+        stage ('Deploy to webserver') {
+            steps {
+                powershell label: '', script: 'copy-item -path "$($pwd.path)\\framework\\*" -destination \'c:\\inetpub\\wwwroot\''
+                powershell label: '', script: 'copy-item -path "$($pwd.path)\\content\\*" -destination \'c:\\inetpub\\wwwroot\''
+            }
+        }
+    }
+    
+}
