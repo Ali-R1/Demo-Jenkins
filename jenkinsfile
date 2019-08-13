@@ -4,7 +4,7 @@ pipeline {
         stage ('Git clone framework') {
             steps {
                 dir ('framework') {
-                    git credentialsId: '8f0652e0-75bb-4569-b76f-185101bf3e5c', url: 'git@github.com:iansinclair/jfdi-framework.git'
+                    git credentialsId: 'e761c4d7-4840-4fd4-a715-1c15aee5c69f', url: 'git@github.com:Ali-R1/Demo-Framework.git'
                 }
             }
         }
@@ -12,7 +12,7 @@ pipeline {
         stage ('Git clone content') {
             steps {
                 dir ('content') {
-                    git credentialsId: '8f0652e0-75bb-4569-b76f-185101bf3e5c', url: 'git@github.com:iansinclair/jfdi-web.git'
+                    git credentialsId: 'e761c4d7-4840-4fd4-a715-1c15aee5c69f', url: 'git@github.com:Ali-R1/Demo-Web.git'
                 }
             }
         }
